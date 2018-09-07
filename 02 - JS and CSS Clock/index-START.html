@@ -3,72 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>JS + CSS Clock</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 
-    <div class="clock">
-      <div class="clock-face">
-        <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
-        <div class="hand second-hand"></div>
-      </div>
+  <article class="clock">
+    <div class="dividers-wrapper">
+      <div class="dividers-quoter"></div>
+      <div class="dividers-quoter"></div>
+      <div class="dividers-quoter"></div>
+      <div class="dividers-quoter"></div>
+      <div class="dividers-quoter"></div>
+      <div class="dividers-quoter"></div>
     </div>
-
-
-  <style>
-    html {
-      background:#018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
-      background-size:cover;
-      font-family:'helvetica neue';
-      text-align: center;
-      font-size: 10px;
-    }
-
-    body {
-      margin: 0;
-      font-size: 2rem;
-      display:flex;
-      flex:1;
-      min-height: 100vh;
-      align-items: center;
-    }
-
-    .clock {
-      width: 30rem;
-      height: 30rem;
-      border:20px solid white;
-      border-radius:50%;
-      margin:50px auto;
-      position: relative;
-      padding:2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
-    }
-
-    .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
-    }
-
-    .hand {
-      width:50%;
-      height:6px;
-      background:black;
-      position: absolute;
-      top:50%;
-    }
-
-  </style>
+    <div class="hours-container">
+      <div class="hours"></div>
+    </div>
+    <div class="minutes-container">
+      <div class="minutes"></div>
+    </div>
+    <div class="seconds-container">
+      <div class="seconds"></div>
+    </div>
+  </article>
 
   <script>
+    function initLocalClocks() {
+      const date = new Date;
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const seconds = date.getSeconds();
 
+      const hands = [
+        {
+          hand: 'hours',
+          angle: (hours * 30) + (minutes / 2)
+        },
+        {
+          hand: 'minutes',
+          angle: (minutes * 6)
+        },
+        {
+          hand: 'seconds',
+          angle: (seconds * 6)
+        }
+      ];
 
+      hands.forEach(hand => {
+        const elements = document.querySelectorAll(`.${hand.hand}`);
+        elements.forEach(el => {
+          el.style.transform = `rotateZ(${hand.angle}deg)`;
+          if (hand.hand === 'seconds') el.parentNode.setAttribute('data-second-angle', hand.angle);
+        })
+      });
+      setUpSecMinHands();
+    }
+    initLocalClocks();
+
+    function setUpSecMinHands() {
+      const minutesContainer = document.querySelector('.minutes-container');
+      const secondsContainer = document.querySelector('.seconds-container');
+      const secondAngle = secondsContainer.getAttribute('data-second-angle');
+
+      if (secondAngle > 0) {
+        const delay = (((360 - secondAngle) / 6) + 0.1) * 1000;
+        console.log(delay);
+        setTimeout(function() {
+          moveMinuteHand(minutesContainer);
+        }, delay);
+      }
+      moveSecondHand(secondsContainer);
+    }
+
+    function moveMinuteHand(container) {
+      container.style.transform = 'rotateZ(6deg)';
+
+      setInterval(function () {
+        container.angle === undefined ? container.angle = 12 : container.angle += 6;
+        container.style.transform = `rotateZ(${container.angle}deg)`;
+      }, 60000)
+    }
+
+    function moveSecondHand(container) {
+      setInterval(function() {
+        container.angle === undefined ? container.angle = 6 : container.angle += 6;
+        container.style.transform = `rotateZ(${container.angle}deg)`;
+      }, 1000);
+    }
   </script>
 </body>
 </html>
