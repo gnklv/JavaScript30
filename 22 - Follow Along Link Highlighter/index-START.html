@@ -7,15 +7,18 @@
 </head>
 <body>
 
-    <nav>
-      <ul class="menu">
-        <li><a href="">Home</a></li>
-        <li><a href="">Order Status</a></li>
-        <li><a href="">Tweets</a></li>
-        <li><a href="">Read Our History</a></li>
-        <li><a href="">Contact Us</a></li>
-      </ul>
-    </nav>
+    <div class="menu">
+      <nav class="nav">
+        <div class="slider"></div>
+        <ul class="nav-list">
+          <li><a class="nav-link" href="">Home</a></li>
+          <li><a class="nav-link" href="">Order Status</a></li>
+          <li><a class="nav-link" href="">Tweets</a></li>
+          <li><a class="nav-link" href="">Read Our History</a></li>
+          <li><a class="nav-link" href="">Contact Us</a></li>
+        </ul>
+      </nav>
+    </div>
 
     <div class="wrapper">
       <p>Lorem ipsum dolor sit amet, <a href="">consectetur</a> adipisicing elit. Est <a href="">explicabo</a> unde natus necessitatibus esse obcaecati distinctio, aut itaque, qui vitae!</p>
@@ -26,7 +29,24 @@
     </div>
 
   <script>
-    // 👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀
+    // reference - https://stripe.com
+
+    const nav = document.querySelector('.nav');
+    const triggers = document.querySelectorAll('.nav-link');
+    const slider = document.querySelector('.slider');
+
+    function sliderLink(e) {
+      e.preventDefault();
+
+      const navCoords = nav.getBoundingClientRect();
+      const linkCoords = this.getBoundingClientRect();
+
+      slider.style.opacity = '1';
+      slider.style.width = `${linkCoords.width}px`;
+      slider.style.left = `${linkCoords.left - navCoords.left}px`;
+    }
+
+    triggers.forEach(link => link.addEventListener('click', sliderLink));
   </script>
 </body>
 </html>
